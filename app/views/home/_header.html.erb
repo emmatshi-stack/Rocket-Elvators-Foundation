@@ -58,12 +58,7 @@
 										<%= link_to "CONTACT" , "#{root_path}home#contact"%>
 										
 									</li>
-									<li><!-- CONTACT -->
-	
-										<%= link_to "INTERVENTIONS" , "#{root_path}interventions#interventions"%>
-										
-										
-									</li>
+									
 									<li>
 									
 										<% if !current_user %>
@@ -76,6 +71,15 @@
 										<% if current_user%>
 											<% if current_user.admin%>
 											<a href=<%= "admin" %>>ADMIN</a>
+											<% end %>
+										<% end %>
+								
+									</li>
+									<li>
+									
+										<% if current_user%>
+											<% if current_user.admin%>
+											<%= link_to "INTERVENTIONS" , "#{root_path}interventions#interventions"%>
 											<% end %>
 										<% end %>
 								

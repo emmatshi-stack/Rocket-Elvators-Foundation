@@ -1,10 +1,19 @@
 class InterventionsController < ApplicationController
+    before_action :require_login
+
+    def require_login
+        if !current_user
+          flash[:error] = "You must be logged in to access this section"
+          redirect_to main_app.root_path # halts request cycle
+        end
+      end
+
     def interventions
         @interventions = Intervention.new
         puts @interventions
         puts params
         
-        @isSaved = params["isSaved"]
+        
     end
     
     def getbuildings
@@ -75,7 +84,7 @@ class InterventionsController < ApplicationController
         p "user information: "
         p current_user
 
-        intervention.author_id = current_user.id
+        intervention.author = current_user.id
         intervention.result = "Incomplet"
         intervention.reports = description
         intervention.status = "Pending"
@@ -83,14 +92,22 @@ class InterventionsController < ApplicationController
         intervention.building_id = building
         if battery != "-1"
             intervention.battery_id = battery
+
         end 
-        
+        #var cust = Customer.where(:customer => intervention.customer_id)
         if column != "-1"
             intervention.column_id = column
+            intervention.battery_id = nil
+            
+
+            
         end 
 
         if elevator != "-1"
             intervention.elevator_id = elevator
+            intervention.column_id = nil
+            intervention.battery_id = nil
+
         end 
 
         
@@ -100,13 +117,49 @@ class InterventionsController < ApplicationController
 
 
         puts intervention.inspect
-        intervention.save!
+        #intervention.save!
+        if intervention.save
+            # fact_contacts()
+            #sendMail()
+            #dropbox()
+
+
+            client = ZendeskAPI::Client.new do |config|
+                config.url = ENV["ZENDESK_URL"]
+                config.username = ENV["ZENDESK_EMAIL"]
+                config.token = ENV["ZENDESK_TOKEN"]
+            end
+    
+            ZendeskAPI::Ticket.create!(client,
+            :subject => "#{intervention.id} from #{intervention.id}",
+            :comment => {
+                :value => "Intervention request author: Name #{intervention.author} from #{intervention.id} can be reach at email #{intervention.id} and at phone number #{intervention.id}.
+                #{intervention.id} has a project named #{intervention.id} which would require contribution from Rocket Elevators.
+    
+                #{intervention.id}
+    
+                Attached Message: 
+    
+                The Contact uploaded an attachment"
+            },
+            :priority => "normal",
+            :type => "question"
+            )
+
+
+            redirect_to success_url
+       # else    
+        #    redirect_to "/intervention", notice: "Invalid fields!"
+        end
+       
+    
+
         #puts battery.split(" - ")[0]
 
         #        {"customer_id"=>"1", "building_id"=>"38 - Franklyn Terry", "battery_id"=>"38 - Inactive", "column_id"=>"153 - Active", "elevator_id"=>"Select elevator", "employee_id"=>"17", "description"=>"hshhhstgegre"}, "commit"=>"name of button here", "controller"=>"interventions", "action"=>"save"}
 
         #redirect_to :action => "interventions", :isSaved => true
-        redirect_to quotes_url
+        
     end
 
     
