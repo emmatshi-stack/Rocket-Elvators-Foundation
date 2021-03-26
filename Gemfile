@@ -84,5 +84,4 @@ gem 'underscore-rails', '~> 1.8', '>= 1.8.3'
 
 gem "newrelic_rpm"
 
-gem 'faraday'
 
