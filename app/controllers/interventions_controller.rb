@@ -85,16 +85,20 @@ class InterventionsController < ApplicationController
         p current_user
 
         intervention.author = current_user.id
-        intervention.result = "Incomplet"
+        intervention.result = "Incomplete"
         intervention.reports = description
         intervention.status = "Pending"
         intervention.customer_id = customer
         intervention.building_id = building
+        intervention.employee_id = employee
         if battery != "-1"
             intervention.battery_id = battery
 
-        end 
-        #var cust = Customer.where(:customer => intervention.customer_id)
+        end
+
+        
+        
+        
         if column != "-1"
             intervention.column_id = column
             intervention.battery_id = nil
@@ -112,7 +116,19 @@ class InterventionsController < ApplicationController
 
         
         
-        intervention.employee_id = employee
+        
+        customer_int = Customer.where(:id => intervention.customer_id)
+        employee_int = Employee.where(:id => intervention.employee_id)
+        
+            
+
+
+        p "#####################################start#############################################"
+        p customer_int
+        p "#########################################middle############################################"
+
+        p employee_int
+        p "#########################################end############################################"
 
 
 
@@ -124,27 +140,36 @@ class InterventionsController < ApplicationController
             #dropbox()
 
 
-            client = ZendeskAPI::Client.new do |config|
-                config.url = ENV["ZENDESK_URL"]
-                config.username = ENV["ZENDESK_EMAIL"]
-                config.token = ENV["ZENDESK_TOKEN"]
-            end
+            # client = ZendeskAPI::Client.new do |config|
+            #     config.url = ENV["ZENDESK_URL"]
+            #     config.username = ENV["ZENDESK_EMAIL"]
+            #     config.token = ENV["ZENDESK_TOKEN"]
+            # end
     
-            ZendeskAPI::Ticket.create!(client,
-            :subject => "#{intervention.id} from #{intervention.id}",
-            :comment => {
-                :value => "Intervention request author: Name #{intervention.author} from #{intervention.id} can be reach at email #{intervention.id} and at phone number #{intervention.id}.
-                #{intervention.id} has a project named #{intervention.id} which would require contribution from Rocket Elevators.
+            # ZendeskAPI::Ticket.create!(client,
+            # :subject => "#{intervention.id} from #{intervention.id}",
+            # :comment => {
+            #     :value => "An intervention form has been submitted by the employee having the following information: 
+            #     The Requester: #{intervention.author} 
+            #     The Customer: #{customer_int.company_name} 
+            #     Building ID: #{intervention.building_id}
+            #     The Battery ID: #{intervention.battery_id}
+            #     The Column ID : #{intervention.column_id}
+            #     Elevator ID if specified: #{intervention.elevator_id}
+            #     The employee to be assigned to the task: #{customer_int.first_name} #{employeE.last_name}
+            #     Description of the request for intervention: #{intervention.reports}
+
+            #     Thank you Rocket Elevator is there for your vertical transportation need.
     
-                #{intervention.id}
+                
     
-                Attached Message: 
+            #     Attached Message: 
     
-                The Contact uploaded an attachment"
-            },
-            :priority => "normal",
-            :type => "question"
-            )
+            #     The Contact uploaded an attachment"
+            # },
+            # :priority => "normal",
+            # :type => "question"
+            # )
 
 
             redirect_to success_url

@@ -70,7 +70,7 @@
 									
 										<% if current_user%>
 											<% if current_user.admin%>
-											<a href=<%= "admin" %>>ADMIN</a>
+											<%= link_to "INTERVENTIONS" , "#{root_path}interventions#interventions"%>
 											<% end %>
 										<% end %>
 								
@@ -79,11 +79,12 @@
 									
 										<% if current_user%>
 											<% if current_user.admin%>
-											<%= link_to "INTERVENTIONS" , "#{root_path}interventions#interventions"%>
+											<a href=<%= "admin" %>>ADMIN</a>
 											<% end %>
 										<% end %>
 								
 									</li>
+									
 									<li>
 									
 										<% if current_user %>
