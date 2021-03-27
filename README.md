@@ -1,5 +1,5 @@
 # Rocket Elevators Information System <img src="app/assets/images/favicon.png" align="right" alt="Rocket Elevators logo by EMMANUEL"
-a link to my API https://consolidationapicode.azurewebsites.net/
+a link to my API https://apiconsolidation.azurewebsites.net/
 
 # Week 7
 #  Life is a Web Service
